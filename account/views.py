@@ -1,8 +1,7 @@
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from .serializers import RegisterUserSerailizer, LoginUserSerailizer
 
@@ -20,7 +19,7 @@ class RegisterUser(APIView):
         user_data = RegisterUserSerailizer(data['user']).data
         response = Response(
             {"message": "User created successfully", "data": user_data}, 
-            status=status.HTTP_200_OK
+            status=status.HTTP_201_CREATED
         )
         response.set_cookie(
             "access_token",
@@ -62,3 +61,10 @@ class LoginUser(APIView):
         )
         return response
 
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self, request):
+        response = Response({"detail": "Logged out"}, status=status.HTTP_200_OK)
+        response.delete_cookie('access_token')
+        response.delete_cookie('refresh_token')
+        return response
