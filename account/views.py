@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
-from .serializers import RegisterUserSerailizer, LoginUserSerailizer
+from .serializers import RegisterUserSerailizer, LoginUserSerailizer, UploadPhotoSerializer
 
 class Test(APIView):
     def get(self, request):
@@ -68,3 +68,12 @@ class LogoutView(APIView):
         response.delete_cookie('access_token')
         response.delete_cookie('refresh_token')
         return response
+    
+class UploadPhotoView(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self, request):
+        serializer = UploadPhotoSerializer(request.user, data=request.data, partial=True, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "uploaded successfully"}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

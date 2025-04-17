@@ -10,6 +10,8 @@ from .models import CustomUser
 from .utils.validators import password_validation
 from .utils.formatters import white_space_formatter
 
+from cloudinary.uploader import upload 
+
 logger = logging.getLogger(__name__)
 
 class RegisterUserSerailizer(serializers.ModelSerializer):
@@ -18,7 +20,7 @@ class RegisterUserSerailizer(serializers.ModelSerializer):
     password = serializers.CharField(required=True, write_only=True)
     class Meta:
         model = CustomUser
-        fields = ['id','username', 'email', 'password']
+        fields = ['id','username', 'email', 'password', 'profile_picture']
 
     def validate_username(self, value):
         value = white_space_formatter(value)
@@ -33,6 +35,7 @@ class RegisterUserSerailizer(serializers.ModelSerializer):
         username = validated_data.get('username')
         formatted_username = white_space_formatter(username)
         validated_data['username'] = formatted_username
+
         user = CustomUser.objects.create_user(**validated_data)
 
         refresh = RefreshToken.for_user(user)
@@ -69,3 +72,22 @@ class LoginUserSerailizer(serializers.Serializer):
         
         raise serializers.ValidationError("Must include both username and password.")
 
+class UploadPhotoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['profile_picture']
+
+    def update(self, instance, validated_data):
+        image = validated_data.get('profile_picture')
+        if image:
+            try:
+                result = upload(image, folder="profile_pictures/")
+            except Exception as e:
+                logger.error(f"Unexpected error during image upload: {e}")
+                raise serializers.ValidationError("An unexpected error occurred during image upload. Try again")
+        else:
+            raise serializers.ValidationError("Need to attach a valid image")            
+        
+        instance.profile_picture = result["secure_url"]
+        instance.save()
+        return instance
