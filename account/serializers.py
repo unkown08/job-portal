@@ -34,7 +34,14 @@ class RegisterUserSerailizer(serializers.ModelSerializer):
         formatted_username = white_space_formatter(username)
         validated_data['username'] = formatted_username
         user = CustomUser.objects.create_user(**validated_data)
-        return user 
+
+        refresh = RefreshToken.for_user(user)
+
+        return {
+                "user": user,
+                "access": str(refresh.access_token),
+                "refresh": str(refresh),
+        }
 
 class LoginUserSerailizer(serializers.Serializer):
     username = serializers.CharField(required=True)

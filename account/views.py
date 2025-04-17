@@ -14,24 +14,24 @@ class RegisterUser(APIView):
     permission_classes = [AllowAny]
     def post(self, request):
         serializer = RegisterUserSerailizer(data=request.data)
-
         if not serializer.is_valid():
             return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-        
-        user = serializer.save()
-        refresh = RefreshToken.for_user(user)
-        user_data = RegisterUserSerailizer(user).data
-        response = Response({"message": "user created successfully", "data": user_data}, status=status.HTTP_200_OK)
+        data = serializer.save()
+        user_data = RegisterUserSerailizer(data['user']).data
+        response = Response(
+            {"message": "User created successfully", "data": user_data}, 
+            status=status.HTTP_200_OK
+        )
         response.set_cookie(
             "access_token",
-            str(refresh.access_token),
+            data['access'],
             samesite=None,
             secure=True,
             httponly=True
         )
         response.set_cookie(
             "refresh_token",
-            str(refresh),
+            data['refresh'],
             samesite=None,
             secure=True,
             httponly=True
