@@ -1,6 +1,12 @@
 import logging
+
 from rest_framework import serializers
+from rest_framework_simplejwt.tokens import RefreshToken
+
+from django.contrib.auth import authenticate
+
 from .models import CustomUser
+
 from .utils.validators import password_validation
 from .utils.formatters import white_space_formatter
 
@@ -29,4 +35,30 @@ class RegisterUserSerailizer(serializers.ModelSerializer):
         validated_data['username'] = formatted_username
         user = CustomUser.objects.create_user(**validated_data)
         return user 
+
+class LoginUserSerailizer(serializers.Serializer):
+    username = serializers.CharField(required=True)
+    password = serializers.CharField(required=True, write_only=True)
+
+    def validate(self, data):
+        username = data.get("username")
+        password = data.get("password")
+
+        if username and password:
+            user = authenticate(username=username, password=password)
+
+            if user is None:
+                raise serializers.ValidationError("Invalid username or password")
+            if not user.is_active:
+                raise serializers.ValidationError("User us deactivated")
+            
+            refresh = RefreshToken.for_user(user)
+
+            return {
+                "username": user.username,
+                "access": str(refresh.access_token),
+                "refresh": str(refresh),
+            }
+        
+        raise serializers.ValidationError("Must include both username and password.")
 

@@ -18,3 +18,5 @@ def password_validation(value: str):
         raise serializers.ValidationError(
             "Password must have at least one number character"
         )
+    
+    return value
