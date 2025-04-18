@@ -94,3 +94,28 @@ class UploadPhotoSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+class ChangePasswordSerailizer(serializers.Serializer):
+    username = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True, write_only=True)
+    current_password = serializers.CharField(required=True, write_only=True)
+
+    def validate_new_password(self, value):
+        return password_validation(value)
+    
+    def validate(self, data):
+        current_password = data.get('current_password')
+        username = data.get('username')
+        if username and current_password:
+            user = authenticate(username=username, password=current_password)
+            if user is None:
+                raise serializers.ValidationError("Invalid username or password")
+            if not user.is_active:
+                raise serializers.ValidationError("User us deactivated")
+        return data
+    
+    def save(self):
+        user = self.context['request'].user
+        new_password = self.validated_data['new_password']
+        user.set_password(new_password)
+        user.save()
+        return user 

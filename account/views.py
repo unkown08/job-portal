@@ -3,13 +3,13 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
-from .serializers import RegisterUserSerailizer, LoginUserSerailizer, UploadPhotoSerializer
+from .serializers import RegisterUserSerailizer, LoginUserSerailizer, UploadPhotoSerializer, ChangePasswordSerailizer
 
 class Test(APIView):
     def get(self, request):
         return Response({"message": "Working"}, status=status.HTTP_200_OK)
     
-class RegisterUser(APIView):
+class RegisterUseView(APIView):
     permission_classes = [AllowAny]
     def post(self, request):
         serializer = RegisterUserSerailizer(data=request.data)
@@ -37,7 +37,7 @@ class RegisterUser(APIView):
         )
         return response
         
-class LoginUser(APIView):
+class LoginUserView(APIView):
     permission_classes = [AllowAny]
     def post(self, request):
         serializer = LoginUserSerailizer(data=request.data)
@@ -77,3 +77,12 @@ class UploadPhotoView(APIView):
             serializer.save()
             return Response({"message": "uploaded successfully"}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class ChangePasswordView(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self, request):
+        serializer = ChangePasswordSerailizer(data=request.data, context={'request': request})
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.save()
+        return Response({"message": "Password updated successfully"}, status=status.HTTP_200_OK)
