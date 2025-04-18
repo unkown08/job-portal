@@ -35,6 +35,8 @@ class RegisterUserSerailizer(serializers.ModelSerializer):
         username = validated_data.get('username')
         formatted_username = white_space_formatter(username)
         validated_data['username'] = formatted_username
+        result = {"secure_url": "https://res.cloudinary.com/dz87hmkzn/image/upload/v1716191715/oiudcncjhzzttodpymtq.webp"}
+        validated_data['profile_picture'] = result['secure_url']
 
         user = CustomUser.objects.create_user(**validated_data)
 
@@ -91,3 +93,4 @@ class UploadPhotoSerializer(serializers.ModelSerializer):
         instance.profile_picture = result["secure_url"]
         instance.save()
         return instance
+
