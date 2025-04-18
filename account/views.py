@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
-from .serializers import RegisterUserSerailizer, LoginUserSerailizer, UploadPhotoSerializer, ChangePasswordSerailizer
+from .serializers import RegisterUserSerailizer, LoginUserSerailizer, UpdateCustomUserFields, ChangePasswordSerailizer
 
 class Test(APIView):
     def get(self, request):
@@ -72,7 +72,7 @@ class LogoutView(APIView):
 class UploadPhotoView(APIView):
     permission_classes = [IsAuthenticated]
     def post(self, request):
-        serializer = UploadPhotoSerializer(request.user, data=request.data, partial=True, context={'request': request})
+        serializer = UpdateCustomUserFields(request.user, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response({"message": "uploaded successfully"}, status=status.HTTP_200_OK)
@@ -86,3 +86,21 @@ class ChangePasswordView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         serializer.save()
         return Response({"message": "Password updated successfully"}, status=status.HTTP_200_OK)
+    
+class UpdateUserInfoView(APIView):
+    permission_classes = [IsAuthenticated]
+    def patch(self, request):
+        updatable_fields = ['bio', 'location', 'first_name', 'last_name']
+
+        data = {key: request.data[key] for key in updatable_fields if key in request.data}
+
+        if not data:
+            return Response({"error": "No valid fields provided to update."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        serializer = UpdateCustomUserFields(request.user, data=data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "User information updated successfully."}, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
