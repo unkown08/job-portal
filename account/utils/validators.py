@@ -20,3 +20,4 @@ def password_validation(value: str):
         )
     
     return value
+
