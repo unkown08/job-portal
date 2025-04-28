@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
-from .serializers import RegisterUserSerailizer, LoginUserSerailizer, UpdateCustomUserFields, ChangePasswordSerailizer
+from .serializers import RegisterUserSerailizer, LoginUserSerailizer, UpdateCustomUserFields, ChangePasswordSerailizer, UploadProfilePictureSerializer
 
 class Test(APIView):
     def get(self, request):
@@ -72,7 +72,7 @@ class LogoutView(APIView):
 class UploadPhotoView(APIView):
     permission_classes = [IsAuthenticated]
     def post(self, request):
-        serializer = UpdateCustomUserFields(request.user, data=request.data, partial=True)
+        serializer = UploadProfilePictureSerializer(request.user, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response({"message": "uploaded successfully"}, status=status.HTTP_200_OK)

@@ -106,7 +106,6 @@ class UpdateCustomUserFields(serializers.ModelSerializer):
         fields = ['profile_picture', 'bio', 'location', 'first_name', 'last_name']
 
     def update(self, instance, validated_data):
-        image = validated_data.get('profile_picture')
         bio = validated_data.get('bio')
         location = validated_data.get('location')
         first_name = validated_data.get('first_name')
@@ -124,6 +123,17 @@ class UpdateCustomUserFields(serializers.ModelSerializer):
         if bio:
             instance.bio = bio
 
+        instance.save()
+        return instance
+
+    
+class UploadProfilePictureSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ["profile_picture"]
+    
+    def update(self, instance, validated_data):
+        image = validated_data.get('profile_picture')
         if image:
             try:
                 result = upload(image, folder="profile_pictures/")
