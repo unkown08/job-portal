@@ -5,10 +5,10 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from django.contrib.auth import authenticate
 
-from .models import CustomUser, Education, Experience, UserLink
+from ..models import CustomUser, Education, Experience, UserLink
 
-from .utils.validators import password_validation, date_validation
-from .utils.formatters import white_space_formatter
+from ..utils.validators import password_validation, date_validation
+from ..utils.formatters import white_space_formatter
 
 from cloudinary.uploader import upload 
 
@@ -20,7 +20,7 @@ class RegisterUserSerailizer(serializers.ModelSerializer):
     password = serializers.CharField(required=True, write_only=True)
     class Meta:
         model = CustomUser
-        fields = ['id','username', 'email', 'password', 'profile_picture']
+        fields = ['id', 'role', 'username', 'email', 'password', 'profile_picture']
 
     def validate_username(self, value):
         value = white_space_formatter(value)
@@ -37,6 +37,9 @@ class RegisterUserSerailizer(serializers.ModelSerializer):
         validated_data['username'] = formatted_username
         result = {"secure_url": "https://res.cloudinary.com/dz87hmkzn/image/upload/v1716191715/oiudcncjhzzttodpymtq.webp"}
         validated_data['profile_picture'] = result['secure_url']
+
+        role = validated_data.get('role', 'job_seeker')
+        validated_data['role'] = role 
 
         user = CustomUser.objects.create_user(**validated_data)
 
@@ -135,8 +138,10 @@ class UserEducationSerializer(serializers.ModelSerializer):
         return data 
         
     def create(self, validated_data):
-        job_seeker = self.context['request'].user
-        return Education.objects.create(job_seeker=job_seeker, **validated_data)
+        user = self.context['request'].user
+        if user.role == 'recruiter':
+            raise serializers.ValidationError("Recruiter cannot add education fields")
+        return Education.objects.create(job_seeker=user, **validated_data)
 
 class UserJobExperienceSerializer(serializers.ModelSerializer):
     class Meta:
@@ -151,8 +156,10 @@ class UserJobExperienceSerializer(serializers.ModelSerializer):
         return data 
 
     def create(self, validated_data):
-        job_seeker = self.context['request'].user
-        return Experience.objects.create(job_seeker=job_seeker, **validated_data)
+        user = self.context['request'].user
+        if user.role == 'recruiter':
+            raise serializers.ValidationError("Recruiter cannot add experience fields")
+        return Experience.objects.create(job_seeker=user, **validated_data)
     
 class UserURLLinksSerializer(serializers.ModelSerializer):
     class Meta:
@@ -160,5 +167,7 @@ class UserURLLinksSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'url']
 
     def create(self, validated_data):
-        job_seeker = self.context['request'].user
-        return UserLink.objects.create(job_seeker=job_seeker, **validated_data)
+        user = self.context['request'].user
+        if user.role == 'recruiter':
+            raise serializers.ValidationError("Recruiter cannot add links fields")
+        return UserLink.objects.create(job_seeker=user, **validated_data)

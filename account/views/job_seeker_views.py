@@ -3,11 +3,11 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
-from .serializers import RegisterUserSerailizer, LoginUserSerailizer, UpdateCustomUserFields, ChangePasswordSerailizer, UploadProfilePictureSerializer, UserEducationSerializer, UserJobExperienceSerializer, UserURLLinksSerializer
+from ..serializers.job_seeker_serializer import RegisterUserSerailizer, LoginUserSerailizer, UpdateCustomUserFields, ChangePasswordSerailizer, UploadProfilePictureSerializer, UserEducationSerializer, UserJobExperienceSerializer, UserURLLinksSerializer
 
 from django.shortcuts import get_object_or_404
 
-from .models import Education, Experience, UserLink
+from ..models import Education, Experience, UserLink
 
 class RegisterUseView(APIView):
     permission_classes = [AllowAny]
