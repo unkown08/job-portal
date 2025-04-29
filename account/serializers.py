@@ -105,27 +105,6 @@ class UpdateCustomUserFields(serializers.ModelSerializer):
         model = CustomUser
         fields = ['profile_picture', 'bio', 'location', 'first_name', 'last_name']
 
-    def update(self, instance, validated_data):
-        bio = validated_data.get('bio')
-        location = validated_data.get('location')
-        first_name = validated_data.get('first_name')
-        last_name = validated_data.get('last_name')
-
-        if first_name:
-            instance.first_name = first_name
-        
-        if last_name:
-            instance.last_name = last_name
-
-        if location:
-            instance.location = location
-
-        if bio:
-            instance.bio = bio
-
-        instance.save()
-        return instance
-
 class UploadProfilePictureSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
@@ -143,7 +122,7 @@ class UploadProfilePictureSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
-class AddUserEducationSerializer(serializers.ModelSerializer):
+class UserEducationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Education
         fields = ['id', 'institution_name', 'start_date', 'end_date']

@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
-from .serializers import RegisterUserSerailizer, LoginUserSerailizer, UpdateCustomUserFields, ChangePasswordSerailizer, UploadProfilePictureSerializer, AddUserEducationSerializer
+from .serializers import RegisterUserSerailizer, LoginUserSerailizer, UpdateCustomUserFields, ChangePasswordSerailizer, UploadProfilePictureSerializer, UserEducationSerializer
 
 from django.shortcuts import get_object_or_404
 
@@ -109,10 +109,10 @@ class UpdateUserInfoView(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-class AddUserEducationView(APIView):
+class UserEducationView(APIView):
     permission_classes = [IsAuthenticated]
     def post(self, request):
-        serializer = AddUserEducationSerializer(data=request.data, context={"request": request})
+        serializer = UserEducationSerializer(data=request.data, context={"request": request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -120,9 +120,13 @@ class AddUserEducationView(APIView):
     
     def patch(self, request, pk):
         education = get_object_or_404(Education, pk=pk, job_seeker=request.user)
-        serializer = AddUserEducationSerializer(education, data=request.data, partial=True, context={'request': request})
+        serializer = UserEducationSerializer(education, data=request.data, partial=True, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+    def delete(self, request, pk):
+        education = get_object_or_404(Education, pk=pk, job_seeker=request.user)
+        education.delete()
+        return Response({"message": "Education deleted successfully"}, status=status.HTTP_204_NO_CONTENT)

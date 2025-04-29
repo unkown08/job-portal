@@ -9,6 +9,6 @@ urlpatterns = [
     path("upload-picture/", views.UploadPhotoView.as_view(), name="profile_picture"),
     path("change-password/", views.ChangePasswordView.as_view(), name="change_password"),
     path("userinfo/update/", views.UpdateUserInfoView.as_view(), name="update_user_info"),
-    path("education/add", views.AddUserEducationView.as_view(), name='add_user_education'),
-    path("education/<int:pk>/update/", views.AddUserEducationView.as_view(), name="update_user_education")
+    path("education/add", views.UserEducationView.as_view(), name='add_user_education'),
+    path("education/<int:pk>/update/", views.UserEducationView.as_view(), name="update_user_education")
 ]
