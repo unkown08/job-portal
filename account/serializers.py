@@ -146,15 +146,16 @@ class UploadProfilePictureSerializer(serializers.ModelSerializer):
 class AddUserEducationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Education
-        fields = ['institution_name', 'start_date', 'end_date']
+        fields = ['id', 'institution_name', 'start_date', 'end_date']
 
     def validate(self, data):
-        start_date = data.get("start_date")
-        end_date = data.get("end_date")
+        start_date = data.get("start_date", getattr(self.instance, 'start_date', None))
+        end_date = data.get("end_date", getattr(self.instance, 'end_date', None))
         if end_date:
             date_validation(start_date, end_date)
-        return data
+        return data 
         
     def create(self, validated_data):
         job_seeker = self.context['request'].user
         return Education.objects.create(job_seeker=job_seeker, **validated_data)
+

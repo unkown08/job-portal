@@ -5,6 +5,10 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from .serializers import RegisterUserSerailizer, LoginUserSerailizer, UpdateCustomUserFields, ChangePasswordSerailizer, UploadProfilePictureSerializer, AddUserEducationSerializer
 
+from django.shortcuts import get_object_or_404
+
+from .models import Education
+
 class Test(APIView):
     def get(self, request):
         return Response({"message": "Working"}, status=status.HTTP_200_OK)
@@ -113,3 +117,12 @@ class AddUserEducationView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def patch(self, request, pk):
+        education = get_object_or_404(Education, pk=pk, job_seeker=request.user)
+        serializer = AddUserEducationSerializer(education, data=request.data, partial=True, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
