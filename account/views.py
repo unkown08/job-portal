@@ -3,11 +3,11 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
-from .serializers import RegisterUserSerailizer, LoginUserSerailizer, UpdateCustomUserFields, ChangePasswordSerailizer, UploadProfilePictureSerializer, UserEducationSerializer
+from .serializers import RegisterUserSerailizer, LoginUserSerailizer, UpdateCustomUserFields, ChangePasswordSerailizer, UploadProfilePictureSerializer, UserEducationSerializer, UserJobExperienceSerializer
 
 from django.shortcuts import get_object_or_404
 
-from .models import Education
+from .models import Education, Experience
 
 class RegisterUseView(APIView):
     permission_classes = [AllowAny]
@@ -136,3 +136,26 @@ class DeleteUserView(APIView):
         response.delete_cookie('access_token')
         response.delete_cookie('refresh_token')
         return response 
+    
+class UserJobExperienceView(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self, request):
+        serializer = UserJobExperienceSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def patch(self, request, pk):
+        experience = get_object_or_404(Experience, pk=pk, job_seeker=request.user)
+        serializer = UserJobExperienceSerializer(experience, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, pk):
+        experience = get_object_or_404(Experience, pk=pk, job_seeker=request.user)
+        experience.delete()
+        return Response({"message": "Experience deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+

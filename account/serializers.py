@@ -5,7 +5,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from django.contrib.auth import authenticate
 
-from .models import CustomUser, Education
+from .models import CustomUser, Education, Experience
 
 from .utils.validators import password_validation, date_validation
 from .utils.formatters import white_space_formatter
@@ -138,3 +138,18 @@ class UserEducationSerializer(serializers.ModelSerializer):
         job_seeker = self.context['request'].user
         return Education.objects.create(job_seeker=job_seeker, **validated_data)
 
+class UserJobExperienceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Experience
+        fields = ['id', 'company_name', 'job_title', 'start_date', 'end_date', 'description']
+
+    def validate(self, data):
+        start_date = data.get("start_date", getattr(self.instance, 'start_date', None))
+        end_date = data.get("end_date", getattr(self.instance, 'end_date', None))
+        if end_date:
+            date_validation(start_date, end_date)
+        return data 
+
+    def create(self, validated_data):
+        job_seeker = self.context['request'].user
+        return Experience.objects.create(job_seeker=job_seeker, **validated_data)
