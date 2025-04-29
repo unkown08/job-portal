@@ -9,10 +9,6 @@ from django.shortcuts import get_object_or_404
 
 from .models import Education
 
-class Test(APIView):
-    def get(self, request):
-        return Response({"message": "Working"}, status=status.HTTP_200_OK)
-    
 class RegisterUseView(APIView):
     permission_classes = [AllowAny]
     def post(self, request):
