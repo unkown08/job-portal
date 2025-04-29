@@ -4,11 +4,10 @@ from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from django.contrib.auth import authenticate
-from datetime import datetime
 
 from .models import CustomUser, Education
 
-from .utils.validators import password_validation
+from .utils.validators import password_validation, date_validation
 from .utils.formatters import white_space_formatter
 
 from cloudinary.uploader import upload 
@@ -152,13 +151,10 @@ class AddUserEducationSerializer(serializers.ModelSerializer):
     def validate(self, data):
         start_date = data.get("start_date")
         end_date = data.get("end_date")
-        if end_date and start_date > end_date:
-            raise serializers.ValidationError("Start date cannot be after end date.")
-        if end_date and end_date > datetime.today().date():
-            raise serializers.ValidationError("End date cannot be in the future.")
+        if end_date:
+            date_validation(start_date, end_date)
         return data
         
     def create(self, validated_data):
         job_seeker = self.context['request'].user
         return Education.objects.create(job_seeker=job_seeker, **validated_data)
-    

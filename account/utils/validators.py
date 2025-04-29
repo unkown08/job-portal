@@ -1,5 +1,6 @@
 import re 
 from rest_framework import serializers
+from datetime import datetime
 
 def password_validation(value: str):
     if len(value) < 5:
@@ -21,3 +22,9 @@ def password_validation(value: str):
     
     return value
 
+def date_validation(s_date, e_date):
+    if s_date > e_date:
+        raise serializers.ValidationError("Start date cannot be after end date.")
+    if e_date > datetime.today().date():
+        raise serializers.ValidationError("End date cannot be in the future.")
+        
