@@ -107,6 +107,17 @@ class UpdateUserInfoView(APIView):
     
 class UserEducationView(APIView):
     permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk=None):
+        if pk is not None:
+            education = get_object_or_404(Education, pk=pk, job_seeker=request.user)
+            serializer = UserEducationSerializer(education)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            education = Education.objects.filter(job_seeker=request.user)
+            serializer = UserEducationSerializer(education, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
     def post(self, request):
         serializer = UserEducationSerializer(data=request.data, context={"request": request})
         if serializer.is_valid():
@@ -139,6 +150,18 @@ class DeleteUserView(APIView):
     
 class UserJobExperienceView(APIView):
     permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk=None):
+        if pk is not None:
+            experience = get_object_or_404(Experience, pk=pk, job_seeker=request.user)
+            serializer = UserJobExperienceSerializer(experience)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            experience = Experience.objects.filter(job_seeker=request.user)
+            serializer = UserJobExperienceSerializer(experience, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+
     def post(self, request):
         serializer = UserJobExperienceSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
@@ -161,6 +184,17 @@ class UserJobExperienceView(APIView):
 
 class UserURLLinksView(APIView):
     permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk=None):
+        if pk is not None:
+            userlink = get_object_or_404(UserLink, pk=pk, job_seeker=request.user)
+            serializer = UserURLLinksSerializer(userlink)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            userlinks = UserLink.objects.filter(job_seeker=request.user)
+            serializer = UserURLLinksSerializer(userlinks, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
     def post(self, request):
         serializer = UserURLLinksSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
@@ -181,4 +215,3 @@ class UserURLLinksView(APIView):
         userlink.delete()
         return Response({"message": "Experience deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
 
-# {"username": "someone", "password": "someOne@1"}
