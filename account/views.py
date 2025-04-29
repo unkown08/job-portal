@@ -126,3 +126,13 @@ class UserEducationView(APIView):
         education = get_object_or_404(Education, pk=pk, job_seeker=request.user)
         education.delete()
         return Response({"message": "Education deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+
+class DeleteUserView(APIView):
+    permission_classes = [IsAuthenticated]
+    def delete(self, request):
+        user = request.user
+        user.delete()
+        response = Response({"message": "User deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+        response.delete_cookie('access_token')
+        response.delete_cookie('refresh_token')
+        return response 
