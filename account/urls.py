@@ -13,4 +13,6 @@ urlpatterns = [
     path("user/education/<int:pk>/", views.UserEducationView.as_view(), name="update_user_education"),
     path("user/experience/", views.UserJobExperienceView.as_view(), name="add_user_experience"),
     path("user/experience/<int:pk>/", views.UserJobExperienceView.as_view(), name="update_user_experience"),
+    path("user/url-link/", views.UserURLLinksView.as_view(), name="add_user_urls"),
+    path("user/url-link/<int:pk>/", views.UserURLLinksView.as_view(), name="update_user_urls"),
 ]
