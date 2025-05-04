@@ -105,13 +105,13 @@ class ChangePasswordSerailizer(serializers.Serializer):
     
 class UpdateCustomUserFields(serializers.ModelSerializer):
     class Meta:
-        model = CustomUser
+        model = CustomUser 
         fields = ['profile_picture', 'bio', 'location', 'first_name', 'last_name']
 
 class UploadProfilePictureSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ["profile_picture"]
+        fields = ["profile_picture"] 
     
     def update(self, instance, validated_data):
         image = validated_data.get('profile_picture')
