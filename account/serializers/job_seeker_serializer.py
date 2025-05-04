@@ -10,7 +10,6 @@ from cloudinary.uploader import upload
 
 logger = logging.getLogger(__name__)
 
-
 class UpdateCustomUserFields(serializers.ModelSerializer):
     class Meta:
         model = JobSeeker 
