@@ -7,7 +7,7 @@ from ..serializers.job_seeker_serializer import UpdateCustomUserFields, UploadPr
 
 from django.shortcuts import get_object_or_404
 
-from ..models import Education, Experience, UserLink, JobSeeker
+from ..custom_models.job_seeker_models import Education, Experience, UserLink, JobSeeker
 
 class UploadPhotoView(APIView):
     permission_classes = [IsAuthenticated]

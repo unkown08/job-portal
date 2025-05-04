@@ -2,7 +2,7 @@ import logging
 
 from rest_framework import serializers
 
-from ..models import JobSeeker, Education, Experience, UserLink
+from ..custom_models.job_seeker_models import JobSeeker, Education, Experience, UserLink
 
 from ..utils.validators import date_validation
 

@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import CustomUser, Education, UserLink, Experience, JobSeeker
+from .models import CustomUser
+from .custom_models.job_seeker_models import Education, UserLink, Experience, JobSeeker
 # Register your models here.
 
 admin.site.register(CustomUser)
