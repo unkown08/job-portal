@@ -7,13 +7,14 @@ from ..serializers.job_seeker_serializer import UpdateCustomUserFields, UploadPr
 
 from django.shortcuts import get_object_or_404
 
-from ..models import Education, Experience, UserLink
+from ..models import Education, Experience, UserLink, JobSeeker
 
 
 class UploadPhotoView(APIView):
     permission_classes = [IsAuthenticated]
     def post(self, request):
-        serializer = UploadProfilePictureSerializer(request.user, data=request.data, partial=True)
+        job_seeker, _ = JobSeeker.objects.get_or_create(user=request.user)
+        serializer = UploadProfilePictureSerializer(job_seeker, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response({"message": "uploaded successfully"}, status=status.HTTP_200_OK)
@@ -28,8 +29,8 @@ class UpdateUserInfoView(APIView):
 
         if not data:
             return Response({"error": "No valid fields provided to update."}, status=status.HTTP_400_BAD_REQUEST)
-        
-        serializer = UpdateCustomUserFields(request.user, data=data, partial=True)
+        job_seeker, _ = JobSeeker.objects.get_or_create(user=request.user)
+        serializer = UpdateCustomUserFields(job_seeker, data=data, partial=True)
 
         if serializer.is_valid():
             serializer.save()

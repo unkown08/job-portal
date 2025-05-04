@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 class UpdateCustomUserFields(serializers.ModelSerializer):
     class Meta:
         model = JobSeeker 
-        fields = ['bio', 'location', 'first_name', 'last_name']
+        fields = ['bio', 'location']
 
 class UploadProfilePictureSerializer(serializers.ModelSerializer):
     class Meta:
