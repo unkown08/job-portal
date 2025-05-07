@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from cloudinary.models import CloudinaryField
+from .custom_models.recruiter_models import Recruiter
+from .custom_models.job_seeker_models import JobSeeker
 
 # Create your models here.
 class CustomUser(AbstractUser):
