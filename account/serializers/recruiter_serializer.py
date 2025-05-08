@@ -6,6 +6,12 @@ class RegisterRecruiterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recruiter
         fields = ['company_name', 'company_bio', 'location']
+
+    def validate(self, attrs):
+        user = self.context['request'].user
+        if Recruiter.objects.filter(recruiter=user).exists():
+            raise serializers.ValidationError("Recruiter profile already exists for this user.")
+        return attrs
     
     def create(self, validated_data):
         user = self.context['request'].user
