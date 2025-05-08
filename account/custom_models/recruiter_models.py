@@ -19,7 +19,7 @@ class Recruiter(models.Model):
     company_email = models.EmailField(blank=True)
     company_mobile_no = models.CharField(max_length=20, blank=True)
     company_size = models.CharField(max_length=30, choices=SIZE_CHOICES, blank=True)
-    founded_year = models.DateField(blank=True)
+    founded_year = models.DateField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

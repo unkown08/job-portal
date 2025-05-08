@@ -4,6 +4,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 
 from ..models import CustomUser
+from ..custom_models.job_seeker_models import JobSeeker
 
 from ..utils.validators import password_validation
 from ..utils.formatters import white_space_formatter
@@ -34,6 +35,9 @@ class RegisterUserSerailizer(serializers.ModelSerializer):
         validated_data['role'] = role 
 
         user = CustomUser.objects.create_user(**validated_data)
+
+        if role == 'job_seeker':
+            JobSeeker.objects.create(user=user)
 
         refresh = RefreshToken.for_user(user)
 

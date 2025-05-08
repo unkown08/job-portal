@@ -9,11 +9,10 @@ from django.shortcuts import get_object_or_404
 
 from ..custom_models.job_seeker_models import Education, Experience, UserLink, JobSeeker
 
-
 class UploadPhotoView(APIView):
     permission_classes = [IsAuthenticated]
     def post(self, request):
-        job_seeker, _ = JobSeeker.objects.get_or_create(user=request.user)
+        job_seeker = get_object_or_404(JobSeeker, user=request.user)
         serializer = UploadProfilePictureSerializer(job_seeker, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -29,7 +28,7 @@ class UpdateUserInfoView(APIView):
 
         if not data:
             return Response({"error": "No valid fields provided to update."}, status=status.HTTP_400_BAD_REQUEST)
-        job_seeker, _ = JobSeeker.objects.get_or_create(user=request.user)
+        job_seeker = get_object_or_404(JobSeeker, user=request.user)
         serializer = UpdateCustomUserFields(job_seeker, data=data, partial=True)
 
         if serializer.is_valid():
