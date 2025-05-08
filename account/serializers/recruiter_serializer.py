@@ -5,7 +5,7 @@ from ..custom_models.recruiter_models import Recruiter
 class RegisterRecruiterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recruiter
-        fields = ['company_name', 'company_bio', 'location']
+        fields = ['id', 'company_name', 'company_bio', 'location']
 
     def validate(self, attrs):
         user = self.context['request'].user

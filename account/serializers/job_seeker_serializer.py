@@ -10,10 +10,10 @@ from cloudinary.uploader import upload
 
 logger = logging.getLogger(__name__)
 
-class UpdateCustomUserFields(serializers.ModelSerializer):
+class JobSeekerSerializer(serializers.ModelSerializer):
     class Meta:
-        model = JobSeeker 
-        fields = ['bio', 'location']
+        model = JobSeeker
+        fields = "__all__"
 
 class UploadProfilePictureSerializer(serializers.ModelSerializer):
     class Meta:

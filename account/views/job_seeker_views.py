@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 
-from ..serializers.job_seeker_serializer import UpdateCustomUserFields, UploadProfilePictureSerializer, UserEducationSerializer, UserJobExperienceSerializer, UserURLLinksSerializer
+from ..serializers.job_seeker_serializer import JobSeekerSerializer, UploadProfilePictureSerializer, UserEducationSerializer, UserJobExperienceSerializer, UserURLLinksSerializer
 
 from django.shortcuts import get_object_or_404
 
@@ -29,7 +29,7 @@ class UpdateUserInfoView(APIView):
         if not data:
             return Response({"error": "No valid fields provided to update."}, status=status.HTTP_400_BAD_REQUEST)
         job_seeker = get_object_or_404(JobSeeker, user=request.user)
-        serializer = UpdateCustomUserFields(job_seeker, data=data, partial=True)
+        serializer = JobSeekerSerializer(job_seeker, data=data, partial=True)
 
         if serializer.is_valid():
             serializer.save()
@@ -82,7 +82,6 @@ class UserJobExperienceView(APIView):
             experience = Experience.objects.filter(job_seeker=request.user)
             serializer = UserJobExperienceSerializer(experience, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
-
 
     def post(self, request):
         serializer = UserJobExperienceSerializer(data=request.data, context={'request': request})
@@ -137,3 +136,17 @@ class UserURLLinksView(APIView):
         userlink.delete()
         return Response({"message": "Experience deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
 
+class GetJobSeekerInfoView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        education = Education.objects.filter(job_seeker=request.user)
+        experience = Experience.objects.filter(job_seeker=request.user)
+        user_links = UserLink.objects.filter(job_seeker=request.user)
+        user = get_object_or_404(JobSeeker, user=request.user)
+
+        return Response({
+            "user": JobSeekerSerializer(user).data,
+            "education": UserEducationSerializer(education, many=True).data,
+            "experience": UserJobExperienceSerializer(experience, many=True).data,
+            "userlinks": UserURLLinksSerializer(user_links, many=True).data
+        }, status=status.HTTP_200_OK)

@@ -15,6 +15,7 @@ urlpatterns = [
     path("job_seeker/experience/<int:pk>/", job_seeker_views.UserJobExperienceView.as_view(), name="update_user_experience"),
     path("job_seeker/url-link/", job_seeker_views.UserURLLinksView.as_view(), name="add_user_urls"),
     path("job_seeker/url-link/<int:pk>/", job_seeker_views.UserURLLinksView.as_view(), name="update_user_urls"),
+    path("job_seeker/info", job_seeker_views.GetJobSeekerInfoView.as_view(), name="job_seeker_info"),
 
     path("recruiter/register/", recruiter_views.RecruiterRegisterView.as_view(), name="register_recruiter"),
 ]
