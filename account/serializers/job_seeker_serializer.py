@@ -45,10 +45,9 @@ class UserEducationSerializer(serializers.ModelSerializer):
         return data 
         
     def create(self, validated_data):
-        user = self.context['request'].user
-        if user.role == 'recruiter':
-            raise serializers.ValidationError("Recruiter cannot add education fields")
-        return Education.objects.create(job_seeker=user, **validated_data)
+        user = self.context['request'].user 
+        job_seeker = user.job_seeker_profile 
+        return Education.objects.create(job_seeker=job_seeker, **validated_data)
 
 class UserJobExperienceSerializer(serializers.ModelSerializer):
     class Meta:
@@ -64,9 +63,8 @@ class UserJobExperienceSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = self.context['request'].user
-        if user.role == 'recruiter':
-            raise serializers.ValidationError("Recruiter cannot add experience fields")
-        return Experience.objects.create(job_seeker=user, **validated_data)
+        job_seeker = user.job_seeker_profile 
+        return Experience.objects.create(job_seeker=job_seeker, **validated_data)
     
 class UserURLLinksSerializer(serializers.ModelSerializer):
     class Meta:
@@ -75,6 +73,5 @@ class UserURLLinksSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = self.context['request'].user
-        if user.role == 'recruiter':
-            raise serializers.ValidationError("Recruiter cannot add links fields")
-        return UserLink.objects.create(job_seeker=user, **validated_data)
+        job_seeker = user.job_seeker_profile 
+        return UserLink.objects.create(job_seeker=job_seeker, **validated_data)

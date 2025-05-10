@@ -9,6 +9,7 @@ from django.shortcuts import get_object_or_404
 
 from ..custom_models.job_seeker_models import Education, Experience, UserLink, JobSeeker
 
+
 class UploadPhotoView(APIView):
     permission_classes = [IsAuthenticated]
     def post(self, request):
@@ -42,11 +43,11 @@ class UserEducationView(APIView):
 
     def get(self, request, pk=None):
         if pk is not None:
-            education = get_object_or_404(Education, pk=pk, job_seeker=request.user)
+            education = get_object_or_404(Education, pk=pk, job_seeker=request.user.job_seeker_profile)
             serializer = UserEducationSerializer(education)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            education = Education.objects.filter(job_seeker=request.user)
+            education = Education.objects.filter(job_seeker=request.user.job_seeker_profile)
             serializer = UserEducationSerializer(education, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -58,7 +59,7 @@ class UserEducationView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def patch(self, request, pk):
-        education = get_object_or_404(Education, pk=pk, job_seeker=request.user)
+        education = get_object_or_404(Education, pk=pk, job_seeker=request.user.job_seeker_profile)
         serializer = UserEducationSerializer(education, data=request.data, partial=True, context={'request': request})
         if serializer.is_valid():
             serializer.save()
@@ -66,7 +67,7 @@ class UserEducationView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def delete(self, request, pk):
-        education = get_object_or_404(Education, pk=pk, job_seeker=request.user)
+        education = get_object_or_404(Education, pk=pk, job_seeker=request.user.job_seeker_profile)
         education.delete()
         return Response({"message": "Education deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
 
@@ -75,11 +76,11 @@ class UserJobExperienceView(APIView):
 
     def get(self, request, pk=None):
         if pk is not None:
-            experience = get_object_or_404(Experience, pk=pk, job_seeker=request.user)
+            experience = get_object_or_404(Experience, pk=pk, job_seeker=request.user.job_seeker_profile)
             serializer = UserJobExperienceSerializer(experience)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            experience = Experience.objects.filter(job_seeker=request.user)
+            experience = Experience.objects.filter(job_seeker=request.user.job_seeker_profile)
             serializer = UserJobExperienceSerializer(experience, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -91,7 +92,7 @@ class UserJobExperienceView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def patch(self, request, pk):
-        experience = get_object_or_404(Experience, pk=pk, job_seeker=request.user)
+        experience = get_object_or_404(Experience, pk=pk, job_seeker=request.user.job_seeker_profile)
         serializer = UserJobExperienceSerializer(experience, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -99,7 +100,7 @@ class UserJobExperienceView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def delete(self, request, pk):
-        experience = get_object_or_404(Experience, pk=pk, job_seeker=request.user)
+        experience = get_object_or_404(Experience, pk=pk, job_seeker=request.user.job_seeker_profile)
         experience.delete()
         return Response({"message": "Experience deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
 
@@ -108,11 +109,11 @@ class UserURLLinksView(APIView):
 
     def get(self, request, pk=None):
         if pk is not None:
-            userlink = get_object_or_404(UserLink, pk=pk, job_seeker=request.user)
+            userlink = get_object_or_404(UserLink, pk=pk, job_seeker=request.user.job_seeker_profile)
             serializer = UserURLLinksSerializer(userlink)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            userlinks = UserLink.objects.filter(job_seeker=request.user)
+            userlinks = UserLink.objects.filter(job_seeker=request.user.job_seeker_profile)
             serializer = UserURLLinksSerializer(userlinks, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -124,7 +125,7 @@ class UserURLLinksView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def patch(self, request, pk):
-        userlink = get_object_or_404(UserLink, pk=pk, job_seeker=request.user)
+        userlink = get_object_or_404(UserLink, pk=pk, job_seeker=request.user.job_seeker_profile)
         serializer = UserURLLinksSerializer(userlink, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -132,17 +133,17 @@ class UserURLLinksView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def delete(self, request, pk):
-        userlink = get_object_or_404(UserLink, pk=pk, job_seeker=request.user)
+        userlink = get_object_or_404(UserLink, pk=pk, job_seeker=request.user.job_seeker_profile)
         userlink.delete()
         return Response({"message": "Experience deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
 
 class GetJobSeekerInfoView(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request):
-        education = Education.objects.filter(job_seeker=request.user)
-        experience = Experience.objects.filter(job_seeker=request.user)
-        user_links = UserLink.objects.filter(job_seeker=request.user)
         user = get_object_or_404(JobSeeker, user=request.user)
+        education = Education.objects.filter(job_seeker=user)
+        experience = Experience.objects.filter(job_seeker=user)
+        user_links = UserLink.objects.filter(job_seeker=user)
 
         return Response({
             "user": JobSeekerSerializer(user).data,

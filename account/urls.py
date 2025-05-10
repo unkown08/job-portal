@@ -19,3 +19,4 @@ urlpatterns = [
 
     path("recruiter/register/", recruiter_views.RecruiterRegisterView.as_view(), name="register_recruiter"),
 ]
+
