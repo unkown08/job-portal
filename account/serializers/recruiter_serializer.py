@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from cloudinary.uploader import upload 
+
 from ..custom_models.recruiter_models import Recruiter
 
 class RegisterRecruiterSerializer(serializers.ModelSerializer):
@@ -18,3 +20,19 @@ class RegisterRecruiterSerializer(serializers.ModelSerializer):
         if user.role != 'recruiter':
             raise serializers.ValidationError("Only recruiters can create a recruiter profile.")
         return Recruiter.objects.create(recruiter=user, **validated_data)
+
+class RecruiterLogoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Recruiter 
+        fields = ["company_logo"]
+
+    def update(self, instance, validated_data):
+        image = validated_data.get('company_logo')
+        if image:
+            try:
+                result = upload(image, folder="company_logos/")
+                instance.company_logo = result["secure_url"]
+            except Exception as e:
+                raise serializers.ValidationError("An unexpected error occurred during image upload. Try again")
+        instance.save()
+        return instance
