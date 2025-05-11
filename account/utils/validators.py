@@ -23,7 +23,7 @@ def password_validation(value: str):
     return value
 
 def date_validation(s_date, e_date):
-    if s_date > e_date:
+    if s_date and s_date > e_date:
         raise serializers.ValidationError("Start date cannot be after end date.")
     if e_date > datetime.today().date():
         raise serializers.ValidationError("End date cannot be in the future.")

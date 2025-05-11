@@ -7,8 +7,8 @@ urlpatterns = [
     path("user/login/", user_view.LoginUserView.as_view(), name="login_user"),
     path("user/logout/", user_view.LogoutView.as_view(), name='logout_user'),
     path("user/change-password/", user_view.ChangePasswordView.as_view(), name="change_password"),
-    path("job_seeker/upload-picture/", job_seeker_views.UploadPhotoView.as_view(), name="profile_picture"),
-    path("job_seeker/update-user-info/", job_seeker_views.UpdateUserInfoView.as_view(), name="update_user_info"),
+    path("job_seeker/upload-profile-picture/", job_seeker_views.UploadPhotoView.as_view(), name="profile_picture"),
+    path("job_seeker/update-info/", job_seeker_views.UpdateUserInfoView.as_view(), name="update_user_info"),
     path("job_seeker/education/", job_seeker_views.UserEducationView.as_view(), name='add_user_education'),
     path("job_seeker/education/<int:pk>/", job_seeker_views.UserEducationView.as_view(), name="update_user_education"),
     path("job_seeker/experience/", job_seeker_views.UserJobExperienceView.as_view(), name="add_user_experience"),
@@ -18,6 +18,7 @@ urlpatterns = [
     path("job_seeker/info", job_seeker_views.GetJobSeekerInfoView.as_view(), name="job_seeker_info"),
 
     path("recruiter/register/", recruiter_views.RecruiterRegisterView.as_view(), name="register_recruiter"),
-    path("recruiter/upload-company-logo", recruiter_views.RecruiterLogoView.as_view(), name="recruiter_company_logo")
+    path("recruiter/upload-company-logo", recruiter_views.RecruiterLogoView.as_view(), name="recruiter_company_logo"),
+    path("recruiter/update-info", recruiter_views.UpdateRecruiterProfileView.as_view(), name="update_recruiter_profile")
 ]
 

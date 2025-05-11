@@ -4,6 +4,8 @@ from cloudinary.uploader import upload
 
 from ..custom_models.recruiter_models import Recruiter
 
+from datetime import datetime
+
 class RegisterRecruiterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recruiter
@@ -36,3 +38,13 @@ class RecruiterLogoSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError("An unexpected error occurred during image upload. Try again")
         instance.save()
         return instance
+
+class UpdateRecruiterProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Recruiter 
+        fields = ["company_name", "company_bio", "location", "company_website", "company_email", "company_size", "founded_year", "company_mobile_no"]
+
+    def validate_founded_year(self, value):
+        if value > datetime.today().date():
+            raise serializers.ValidationError("Founded date cannot be in the future.")
+        return value
