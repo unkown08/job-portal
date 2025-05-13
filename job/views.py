@@ -19,6 +19,13 @@ class RegisterJobView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class DeleteJobView(APIView):
+    permission_classes = [IsAuthenticated, IsRecruiter]
+    def delete(self, request, pk):
+        job = get_object_or_404(Jobs, pk=pk)
+        job.delete()
+        return Response({"message": "deleted job"}, status=status.HTTP_204_NO_CONTENT)
+
 class GetRecuiterJobsView(APIView):
     permission_classes = [IsAuthenticated, IsRecruiter] 
     def get(self, request):
