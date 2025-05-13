@@ -2,10 +2,10 @@ from rest_framework import serializers
 
 from .models import Jobs
 
-class RegisterJobSerializer(serializers.ModelSerializer):
+class JobsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Jobs 
-        fields = ["job_type", "location", "job_experience", "job_title", "job_salary", "job_description", "number_of_openings"]
+        fields = ["id", "job_type", "location", "job_experience", "job_title", "job_salary", "job_description", "number_of_openings"]
     
     def create(self, validated_data):
         user = self.context['request'].user
@@ -16,3 +16,4 @@ class RegisterJobSerializer(serializers.ModelSerializer):
         recruiter = user.recruiter_profile
 
         return Jobs.objects.create(recruiter=recruiter, **validated_data)
+
