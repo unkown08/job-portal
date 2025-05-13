@@ -28,7 +28,14 @@ class JobResumeApplySerializer(serializers.ModelSerializer):
         job = self.context['job']
         return JobResumes.objects.create(applicant=user, job=job, **validated_data)
 
+class JobSeekerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = JobSeeker
+        fields = ['id'] 
+
 class JobResumeSerializer(serializers.ModelSerializer):
+    applicant = JobSeekerSerializer()
     class Meta:
         model = JobResumes
-        fields = ["id", "resume", "status", "uploaded_at"]
+        fields = ["id", "applicant", "resume", "status", "uploaded_at"]
+
