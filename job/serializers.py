@@ -34,8 +34,9 @@ class JobSeekerSerializer(serializers.ModelSerializer):
         fields = ['id'] 
 
 class JobResumeSerializer(serializers.ModelSerializer):
-    applicant = JobSeekerSerializer()
+    username = serializers.CharField(source='applicant.user.username', read_only=True)
+    applicant = JobSeekerSerializer(read_only=True)
     class Meta:
         model = JobResumes
-        fields = ["id", "applicant", "resume", "status", "uploaded_at"]
+        fields = ["id", "applicant", "username", "resume", "status", "uploaded_at"]
 
