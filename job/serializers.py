@@ -17,13 +17,18 @@ class JobsSerializer(serializers.ModelSerializer):
         recruiter = user.recruiter_profile
 
         return Jobs.objects.create(recruiter=recruiter, **validated_data)
-
-class ApplyForJobSerializer(serializers.ModelSerializer):
+    
+class JobResumeApplySerializer(serializers.ModelSerializer):
     class Meta:
         model = JobResumes
-        fields = ["id", "resume"]
+        fields = ["id", "status"]
 
     def create(self, validated_data):
         user = self.context['request'].user.job_seeker_profile
         job = self.context['job']
         return JobResumes.objects.create(applicant=user, job=job, **validated_data)
+
+class JobResumeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = JobResumes
+        fields = ["id", "resume", "status", "uploaded_at"]

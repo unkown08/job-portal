@@ -6,4 +6,6 @@ urlpatterns = [
     path("get-jobs/", views.GetRecuiterJobsView.as_view(), name="get_jobs"),
     
     path("apply/<int:pk>/", views.ApplyForJobView.as_view(), name="apply_for_job"),
+    path("get-resumes/<int:pk>/", views.ListResumesAndSetStatusView.as_view()),
+    path("set-status/<int:pk>/", views.ListResumesAndSetStatusView.as_view()),
 ]
