@@ -12,9 +12,13 @@ class Jobs(models.Model):
         ('5-10', '5 to 10 years'),
         ('10', '10+ years'),
     ]
-    JOB_TYPE_CHOICES = [('FT', 'Full-Time'), ('PT', 'Part-Time'), ('CT', 'Contract')]
+    JOB_TYPE_CHOICES = [
+        ('FT', 'Full-Time'), 
+        ('PT', 'Part-Time'), 
+        ('CT', 'Contract')
+    ]
 
-    recruiter = models.OneToOneField(Recruiter, on_delete=models.CASCADE, related_name="job")
+    recruiter = models.ForeignKey(Recruiter, on_delete=models.CASCADE, related_name="job")
     job_description = models.TextField(max_length=500)
     job_salary = models.CharField(max_length=50)
     job_title = models.CharField(max_length=50)

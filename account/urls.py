@@ -2,11 +2,11 @@ from django.urls import path
 from .views import job_seeker_views, user_view, recruiter_views
 
 urlpatterns = [
-    path("user/register/", user_view.RegisterUseView.as_view(), name="register_user"),
-    path("user/delete/", user_view.DeleteUserView.as_view(), name="delete_user"), 
-    path("user/login/", user_view.LoginUserView.as_view(), name="login_user"),
-    path("user/logout/", user_view.LogoutView.as_view(), name='logout_user'),
-    path("user/change-password/", user_view.ChangePasswordView.as_view(), name="change_password"),
+    path("register/", user_view.RegisterUseView.as_view(), name="register_user"),
+    path("delete/", user_view.DeleteUserView.as_view(), name="delete_user"), 
+    path("login/", user_view.LoginUserView.as_view(), name="login_user"),
+    path("logout/", user_view.LogoutView.as_view(), name='logout_user'),
+    path("change-password/", user_view.ChangePasswordView.as_view(), name="change_password"),
     path("job_seeker/upload-profile-picture/", job_seeker_views.UploadPhotoView.as_view(), name="profile_picture"),
     path("job_seeker/update-info/", job_seeker_views.UpdateUserInfoView.as_view(), name="update_user_info"),
     path("job_seeker/education/", job_seeker_views.UserEducationView.as_view(), name='add_user_education'),
