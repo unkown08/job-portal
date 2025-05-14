@@ -7,8 +7,10 @@ from django.shortcuts import get_object_or_404
 
 from account.authentication import IsRecruiter
 
-from .serializers import JobsSerializer, JobResumeSerializer, JobResumeApplySerializer
+from .serializers import JobsSerializer, JobResumeSerializer, JobResumeApplySerializer, JobSeekerProfileSerializer
 from .models import Jobs, JobResumes
+
+from account.custom_models.job_seeker_models import JobSeeker
 
 class RegisterJobView(APIView):
     permission_classes = [IsAuthenticated, IsRecruiter]
@@ -60,3 +62,10 @@ class ListResumesAndSetStatusView(APIView):
             return Response({"message": "Changed Status"}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+class GetUserProfileView(APIView):
+    permission_classes = [IsAuthenticated, IsRecruiter]
+    def post(self, request, pk):
+        job_seeker = get_object_or_404(JobSeeker, pk=pk)
+        serializer = JobSeekerProfileSerializer(job_seeker)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)

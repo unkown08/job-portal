@@ -3,6 +3,8 @@ from rest_framework import serializers
 from .models import Jobs, JobResumes
 from account.custom_models.job_seeker_models import JobSeeker
 
+from account.serializers.job_seeker_serializer import UserEducationSerializer, UserJobExperienceSerializer, UserURLLinksSerializer
+
 class JobsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Jobs 
@@ -40,3 +42,11 @@ class JobResumeSerializer(serializers.ModelSerializer):
         model = JobResumes
         fields = ["id", "applicant", "username", "resume", "status", "uploaded_at"]
 
+class JobSeekerProfileSerializer(serializers.ModelSerializer):
+    experiences = UserJobExperienceSerializer(many=True, read_only=True)
+    educations = UserEducationSerializer(many=True, read_only=True)
+    links = UserURLLinksSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = JobSeeker
+        fields = "__all__"
