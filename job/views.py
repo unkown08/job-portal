@@ -69,3 +69,10 @@ class GetUserProfileView(APIView):
         serializer = JobSeekerProfileSerializer(job_seeker)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+class ListJobsView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        all_jobs = Jobs.objects.all()
+        serializer = JobsSerializer(all_jobs, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

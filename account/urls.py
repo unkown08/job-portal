@@ -19,6 +19,6 @@ urlpatterns = [
 
     path("recruiter/register/", recruiter_views.RecruiterRegisterView.as_view(), name="register_recruiter"),
     path("recruiter/upload-company-logo", recruiter_views.RecruiterLogoView.as_view(), name="recruiter_company_logo"),
-    path("recruiter/update-info", recruiter_views.UpdateRecruiterProfileView.as_view(), name="update_recruiter_profile")
+    path("recruiter/update-info", recruiter_views.UpdateRecruiterProfileView.as_view(), name="update_recruiter_profile"),
 ]
 

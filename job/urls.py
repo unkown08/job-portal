@@ -10,5 +10,7 @@ urlpatterns = [
     path("get-resumes/<int:pk>/", views.ListResumesAndSetStatusView.as_view(), name="list_jobs"),
     path("set-status/<int:pk>/", views.ListResumesAndSetStatusView.as_view(), name="set_status"),
 
-    path("get-job_seeker-profile/<int:pk>/", views.GetUserProfileView.as_view(), name="job_seeker_profile")
+    path("get-job_seeker-profile/<int:pk>/", views.GetUserProfileView.as_view(), name="job_seeker_profile"),
+
+    path("all-jobs/", views.ListJobsView.as_view(), name="all_jobs"),
 ]
