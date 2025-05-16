@@ -73,6 +73,25 @@ class GetUserProfileView(APIView):
 class ListJobsView(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request):
-        all_jobs = Jobs.objects.all()
-        serializer = JobsSerializer(all_jobs, many=True)
+        job_type = request.query_params.get('job_type')
+        job_experience = request.query_params.get('job_experience')
+        location = request.query_params.get('location')
+        search = request.query_params.get('search')
+
+        queryset = Jobs.objects.all()
+
+        if job_type:
+            queryset = queryset.filter(job_type=job_type)
+
+        if job_experience:
+            queryset = queryset.filter(job_experience=job_experience)
+
+        if location:
+            queryset = queryset.filter(location=location)
+
+        if search:
+            queryset = queryset.filter(job_title__icontains=search)
+
+        serializer = JobsSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
