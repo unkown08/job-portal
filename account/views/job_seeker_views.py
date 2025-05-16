@@ -150,3 +150,4 @@ class GetJobSeekerInfoView(APIView):
             "experience": UserJobExperienceSerializer(experience, many=True).data,
             "userlinks": UserURLLinksSerializer(user_links, many=True).data
         }, status=status.HTTP_200_OK)
+

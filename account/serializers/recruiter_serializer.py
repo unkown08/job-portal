@@ -48,3 +48,8 @@ class UpdateRecruiterProfileSerializer(serializers.ModelSerializer):
         if value > datetime.today().date():
             raise serializers.ValidationError("Founded date cannot be in the future.")
         return value
+    
+class RecruiterProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Recruiter 
+        fields = "__all__"

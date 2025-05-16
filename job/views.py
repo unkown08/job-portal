@@ -7,10 +7,11 @@ from django.shortcuts import get_object_or_404
 
 from account.authentication import IsRecruiter
 
-from .serializers import JobsSerializer, JobResumeSerializer, JobResumeApplySerializer, JobSeekerProfileSerializer
+from .serializers import JobsSerializer, JobResumeSerializer, JobResumeApplySerializer, JobSeekerProfileSerializer, RecruiterProfileSerializer
 from .models import Jobs, JobResumes
 
 from account.custom_models.job_seeker_models import JobSeeker
+from account.custom_models.recruiter_models import Recruiter
 
 class RegisterJobView(APIView):
     permission_classes = [IsAuthenticated, IsRecruiter]
@@ -67,7 +68,6 @@ class GetUserProfileView(APIView):
     def post(self, request, pk):
         job_seeker = get_object_or_404(JobSeeker, pk=pk)
         serializer = JobSeekerProfileSerializer(job_seeker)
-
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class ListJobsView(APIView):
@@ -101,3 +101,4 @@ class ListSelectedJobView(APIView):
         job = get_object_or_404(Jobs, pk=pk)
         serializer = JobsSerializer(job)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    

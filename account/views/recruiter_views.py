@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 
-from ..serializers.recruiter_serializer import RegisterRecruiterSerializer, RecruiterLogoSerializer, UpdateRecruiterProfileSerializer
+from ..serializers.recruiter_serializer import RegisterRecruiterSerializer, RecruiterLogoSerializer, UpdateRecruiterProfileSerializer, RecruiterProfileSerializer
 
 from django.shortcuts import get_object_or_404
 
@@ -38,3 +38,10 @@ class UpdateRecruiterProfileView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class GetRecruiterInfoView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request, pk):
+        recruiter = get_object_or_404(Recruiter, pk=pk)
+        serializer = RecruiterProfileSerializer(recruiter)
+        return Response(serializer.data, status=status.HTTP_200_OK)
