@@ -7,11 +7,8 @@ from django.shortcuts import get_object_or_404
 
 from account.authentication import IsRecruiter
 
-from .serializers import JobsSerializer, JobResumeSerializer, JobResumeApplySerializer, JobSeekerProfileSerializer, RecruiterProfileSerializer
-from .models import Jobs, JobResumes
-
-from account.custom_models.job_seeker_models import JobSeeker
-from account.custom_models.recruiter_models import Recruiter
+from .serializers import JobsSerializer, JobResumeApplySerializer
+from .models import Jobs
 
 class RegisterJobView(APIView):
     permission_classes = [IsAuthenticated, IsRecruiter]
@@ -47,29 +44,6 @@ class ApplyForJobView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-class ListResumesAndSetStatusView(APIView):
-    permission_classes = [IsAuthenticated, IsRecruiter]
-    def get(self, request, pk):
-        job = get_object_or_404(Jobs, pk=pk)
-        all_applications = JobResumes.objects.filter(job=job)
-        serializer = JobResumeSerializer(all_applications, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    
-    def patch(self, request, pk):
-        resume = get_object_or_404(JobResumes, pk=pk)
-        serializer = JobResumeSerializer(resume, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({"message": "Changed Status"}, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-class GetUserProfileView(APIView):
-    permission_classes = [IsAuthenticated, IsRecruiter]
-    def post(self, request, pk):
-        job_seeker = get_object_or_404(JobSeeker, pk=pk)
-        serializer = JobSeekerProfileSerializer(job_seeker)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
 class ListJobsView(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request):

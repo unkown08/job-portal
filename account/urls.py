@@ -20,7 +20,9 @@ urlpatterns = [
     path("recruiter/register/", recruiter_views.RecruiterRegisterView.as_view(), name="register_recruiter"),
     path("recruiter/upload-company-logo", recruiter_views.RecruiterLogoView.as_view(), name="recruiter_company_logo"),
     path("recruiter/update-info", recruiter_views.UpdateRecruiterProfileView.as_view(), name="update_recruiter_profile"),
-    
-    path("recruiter-info/<int:pk>", recruiter_views.GetRecruiterInfoView.as_view(), name="recruiter-info")
+    path("recruiter/info/<int:pk>", recruiter_views.GetRecruiterInfoView.as_view(), name="recruiter-info"),
+    path("recruiter/job_seeker/info/<int:pk>/", recruiter_views.GetUserProfileView.as_view(), name="job_seeker_profile"),
+    path("recruiter/resumes/<int:pk>/", recruiter_views.ListResumesAndSetStatusView.as_view(), name="list_jobs"),
+    path("recruiter/status/<int:pk>/", recruiter_views.ListResumesAndSetStatusView.as_view(), name="set_status"),
 ]
 

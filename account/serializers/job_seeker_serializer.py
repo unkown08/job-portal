@@ -75,3 +75,4 @@ class UserURLLinksSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
         job_seeker = user.job_seeker_profile 
         return UserLink.objects.create(job_seeker=job_seeker, **validated_data)
+    

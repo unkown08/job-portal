@@ -6,6 +6,11 @@ from ..custom_models.recruiter_models import Recruiter
 
 from datetime import datetime
 
+from account.serializers.job_seeker_serializer import UserEducationSerializer, UserJobExperienceSerializer, UserURLLinksSerializer
+from  account.custom_models.job_seeker_models import JobSeeker
+
+from job.models import JobResumes
+
 class RegisterRecruiterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recruiter
@@ -53,3 +58,25 @@ class RecruiterProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recruiter 
         fields = "__all__"
+
+class JobSeekerProfileSerializer(serializers.ModelSerializer):
+    experiences = UserJobExperienceSerializer(many=True, read_only=True)
+    educations = UserEducationSerializer(many=True, read_only=True)
+    links = UserURLLinksSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = JobSeeker
+        fields = "__all__"
+
+class JobSeekerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = JobSeeker
+        fields = ['id'] 
+
+class JobResumeSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='applicant.user.username', read_only=True)
+    applicant = JobSeekerSerializer(read_only=True)
+    class Meta:
+        model = JobResumes
+        fields = ["id", "applicant", "username", "resume", "status", "uploaded_at"]
+
