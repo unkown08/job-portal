@@ -3,11 +3,13 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 
-from ..serializers.job_seeker_serializer import JobSeekerSerializer, UploadProfilePictureSerializer, UserEducationSerializer, UserJobExperienceSerializer, UserURLLinksSerializer
+from ..serializers.job_seeker_serializer import JobSeekerSerializer, UploadProfilePictureSerializer, UserEducationSerializer, UserJobExperienceSerializer, UserURLLinksSerializer, UserResumesSerializer
 
 from django.shortcuts import get_object_or_404
 
 from ..custom_models.job_seeker_models import Education, Experience, UserLink, JobSeeker
+
+from job.models import JobResumes
 
 class UploadPhotoView(APIView):
     permission_classes = [IsAuthenticated]
@@ -151,3 +153,9 @@ class GetJobSeekerInfoView(APIView):
             "userlinks": UserURLLinksSerializer(user_links, many=True).data
         }, status=status.HTTP_200_OK)
 
+class GetAppliedJobsInfo(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        resumes = JobResumes.objects.filter(applicant=request.user.job_seeker_profile)
+        serializer = UserResumesSerializer(resumes, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

@@ -4,6 +4,8 @@ from rest_framework import serializers
 
 from ..custom_models.job_seeker_models import JobSeeker, Education, Experience, UserLink
 
+from job.models import JobResumes
+
 from ..utils.validators import date_validation
 
 from cloudinary.uploader import upload 
@@ -75,4 +77,8 @@ class UserURLLinksSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
         job_seeker = user.job_seeker_profile 
         return UserLink.objects.create(job_seeker=job_seeker, **validated_data)
-    
+
+class UserResumesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = JobResumes
+        fields = ["id", "resume", "status"]

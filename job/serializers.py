@@ -1,7 +1,6 @@
 from rest_framework import serializers
 
 from .models import Jobs, JobResumes
-from account.custom_models.job_seeker_models import JobSeeker
 
 class JobsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -21,7 +20,7 @@ class JobsSerializer(serializers.ModelSerializer):
 class JobResumeApplySerializer(serializers.ModelSerializer):
     class Meta:
         model = JobResumes
-        fields = ["id", "status"]
+        fields = ["id", "status", "resume"]
 
     def create(self, validated_data):
         user = self.context['request'].user.job_seeker_profile
