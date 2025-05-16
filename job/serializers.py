@@ -8,7 +8,7 @@ from account.serializers.job_seeker_serializer import UserEducationSerializer, U
 class JobsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Jobs 
-        fields = ["id", "job_type", "location", "job_experience", "job_title", "job_salary", "job_description", "number_of_openings"]
+        fields = "__all__"
     
     def create(self, validated_data):
         user = self.context['request'].user
@@ -50,3 +50,4 @@ class JobSeekerProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = JobSeeker
         fields = "__all__"
+

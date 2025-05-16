@@ -95,3 +95,9 @@ class ListJobsView(APIView):
         serializer = JobsSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
+class ListSelectedJobView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request, pk):
+        job = get_object_or_404(Jobs, pk=pk)
+        serializer = JobsSerializer(job)
+        return Response(serializer.data, status=status.HTTP_200_OK)

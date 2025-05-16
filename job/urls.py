@@ -13,4 +13,5 @@ urlpatterns = [
     path("get-job_seeker-profile/<int:pk>/", views.GetUserProfileView.as_view(), name="job_seeker_profile"),
 
     path("all-jobs/", views.ListJobsView.as_view(), name="all_jobs"),
+    path("<int:pk>/", views.ListSelectedJobView.as_view(), name="selected_job"),
 ]
